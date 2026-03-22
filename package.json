@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "prisma generate && next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "screenshots:readme": "node scripts/capture-readme-screenshots.mjs"
   },
   "dependencies": {
     "@prisma/client": "^6.19.2",
@@ -22,6 +23,7 @@
     "autoprefixer": "^10.4.21",
     "eslint": "^9.23.0",
     "eslint-config-next": "15.2.4",
+    "playwright": "^1.58.2",
     "postcss": "^8.5.3",
     "prisma": "^6.19.2",
     "tailwindcss": "^3.4.17",

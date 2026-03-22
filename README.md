@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # AI業務計画アシスタント
 
 業務依頼文を入力すると、生成AIが依頼内容を実務向けに整理し、保存・比較・運用まで行える Next.js アプリです。
@@ -11,6 +10,39 @@
 - フォローアップ質問での精度改善
 - 保存、履歴管理、編集、比較
 - ステータス運用とダッシュボード確認
+
+## スクリーンショット
+
+画像を `public/images/` に配置すると、そのまま GitHub 上の README に表示されます。
+ヘッドレスで撮り直したい場合は、以下を実行します。
+
+```bash
+npm run screenshots:readme
+```
+
+### トップページ
+
+`public/images/top-page.png`
+
+![トップページ](public/images/top-page.png)
+
+### 履歴一覧
+
+`public/images/history-page.png`
+
+![履歴一覧](public/images/history-page.png)
+
+### 詳細ページ
+
+`public/images/detail-page.png`
+
+![詳細ページ](public/images/detail-page.png)
+
+### ダッシュボード
+
+`public/images/dashboard-page.png`
+
+![ダッシュボード](public/images/dashboard-page.png)
 
 ## コンセプト
 
