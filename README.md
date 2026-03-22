@@ -1,36 +1,325 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# AI業務計画アシスタント
 
-## Getting Started
+業務依頼文を入力すると、生成AIが依頼内容を実務向けに整理し、保存・比較・運用まで行える Next.js アプリです。
 
-First, run the development server:
+単なるチャット UI ではなく、以下の業務フローを一気通貫で扱えることを重視しています。
+
+- 依頼文の構造化
+- タスク分解と優先順位付け
+- RAG によるナレッジ参照
+- フォローアップ質問での精度改善
+- 保存、履歴管理、編集、比較
+- ステータス運用とダッシュボード確認
+
+## コンセプト
+
+転職用ポートフォリオとして、以下を伝えやすい構成にしています。
+
+- 生成AIを業務整理に組み込んだ実務アプリであること
+- Next.js / TypeScript / Prisma / SQLite / OpenAI API を使ったフルスタック構成であること
+- MVP から運用機能まで段階的に拡張できる設計であること
+
+## 主な機能
+
+### 1. 業務依頼のAI整理
+
+- 業務依頼文の入力
+- 業務カテゴリ選択
+  - 問い合わせ対応
+  - 障害初動
+  - 引き継ぎ
+  - 営業準備
+  - その他
+- OpenAI モデル切り替え
+  - `gpt-5.4`
+  - `gpt-5.1`
+  - `gpt-5-mini`
+  - `gpt-5-nano`
+- 出力トーン切り替え
+  - 簡潔
+  - 標準
+  - 詳細
+- 出力スタイル切り替え
+  - 現場向け
+  - 管理者向け
+  - 顧客説明向け
+- テンプレート入力
+  - 問い合わせ対応サンプル
+  - 障害初動サンプル
+  - 引き継ぎサンプル
+  - 営業準備サンプル
+
+### 2. AI出力内容
+
+AI は以下の構造化データを返します。
+
+- `requestSummary`
+- `tasks`
+- `priorities`
+- `steps`
+- `risks`
+- `checks`
+- `followUpQuestions`
+
+### 3. RAG と精度改善
+
+- ローカルナレッジを SQLite に保存
+- 入力内容に応じて関連ナレッジを検索して AI に渡す
+- 参照したナレッジを画面に表示
+- 入力不足時は `followUpQuestions` を提示
+- ユーザーが補足回答を入力して再生成できる
+
+### 4. 保存・履歴・運用
+
+- 生成結果の保存
+- 保存済み履歴一覧
+- 詳細ページでの再確認
+- ステータス管理
+  - 未着手
+  - 対応中
+  - 完了
+- 確認済み / 未確認 フラグ
+- 更新日時表示
+- メモ欄
+- 削除機能
+
+### 5. 編集・比較
+
+- 保存済みプランの手動編集
+  - `requestSummary`
+  - `tasks`
+  - `priorities`
+  - `steps`
+  - `risks`
+  - `checks`
+  - `followUpQuestions`
+- 現在の入力内容をもとに再生成
+- 現在内容と再生成結果の比較表示
+- 再生成結果の反映
+
+### 6. タスク運用支援
+
+- タスクチェック機能
+- HIGH / MEDIUM / LOW の優先度色分け表示
+- 一覧ページでの検索、絞り込み、並び替え
+
+並び替え対応:
+
+- 新しい順
+- 古い順
+- 更新日順
+- HIGH優先度を含む順
+- 未着手を上に出す
+
+### 7. コピー / エクスポート
+
+- 全体コピー
+- タスクだけコピー
+- 手順だけコピー
+- 顧客説明向けだけコピー
+- Markdown形式でコピー
+- エクスポート
+  - Markdown
+  - テキスト
+  - JSON
+
+### 8. ダッシュボード
+
+- 総プラン数
+- 未着手件数
+- 対応中件数
+- 完了件数
+- 確認済み件数
+- 総タスク数
+- 完了タスク数
+- カテゴリ別件数
+- ナレッジ件数
+- 最近更新したプラン
+
+## 画面構成
+
+- `/`
+  - トップページ
+  - 入力、生成、再生成、保存、RAG参照、フォローアップ回答
+- `/plans`
+  - 保存済み履歴一覧
+  - 検索、絞り込み、並び替え、統計表示
+- `/plans/[id]`
+  - 保存済み詳細ページ
+  - 編集、比較、再生成、削除、エクスポート、タスクチェック
+- `/dashboard`
+  - 運用ダッシュボード
+
+## API
+
+- `POST /api/generate-plan`
+  - 業務依頼文、カテゴリ、モデル、トーン、スタイル、補足回答を受け取り、構造化プランを返す
+- `POST /api/task-plans`
+  - 生成結果を保存する
+- `GET /api/task-plans`
+  - 保存済み一覧を取得する
+- `GET /api/task-plans/[id]`
+  - 保存済み詳細を取得する
+- `PATCH /api/task-plans/[id]`
+  - ステータス、確認フラグ、メモ、編集内容、再生成反映、タスクチェックを更新する
+- `DELETE /api/task-plans/[id]`
+  - 保存済みプランを削除する
+
+## 技術スタック
+
+- Next.js 15.2.4
+- React 19
+- TypeScript
+- Tailwind CSS
+- Prisma
+- SQLite
+- OpenAI API
+
+## ディレクトリ構成
+
+```text
+app/
+  api/
+    generate-plan/
+    task-plans/
+  dashboard/
+  plans/
+components/
+lib/
+prisma/
+types/
+```
+
+## データモデル
+
+### TaskPlan
+
+- 業務依頼文
+- 要約
+- タスク一覧
+- 優先順位
+- 手順
+- リスク
+- 確認事項
+- フォローアップ質問
+- フォローアップ回答
+- タスクチェック状態
+- RAG参照元
+- ステータス
+- 確認フラグ
+- トーン
+- スタイル
+- メモ
+- 作成日時
+- 更新日時
+
+### KnowledgeItem
+
+- ナレッジタイトル
+- カテゴリ
+- 本文
+- タグ
+- ソース
+- 有効フラグ
+- 作成日時
+- 更新日時
+
+## セットアップ
+
+### 1. 依存関係をインストール
+
+```bash
+npm install
+```
+
+### 2. 環境変数を設定
+
+`.env.local` を作成して以下を設定します。
+
+```env
+DATABASE_URL="file:./prisma/dev.db"
+OPENAI_API_KEY="your_openai_api_key"
+OPENAI_PLAN_MODEL="gpt-5.4"
+```
+
+### 3. Prisma Client 生成と DB 反映
+
+```bash
+npx prisma generate
+npx prisma db push
+```
+
+### 4. 開発サーバー起動
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 5. 本番ビルド確認
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm run build
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 使い方
 
-## Learn More
+### 基本フロー
 
-To learn more about Next.js, take a look at the following resources:
+1. トップページでテンプレートを選ぶ、または業務依頼文を入力する
+2. カテゴリ、モデル、トーン、スタイルを選ぶ
+3. AI で生成する
+4. 必要に応じてフォローアップ質問へ回答し、再生成する
+5. 保存する
+6. 履歴一覧や詳細ページで運用する
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### 詳細ページでできること
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- ステータス変更
+- 確認フラグ切り替え
+- メモ更新
+- プラン本文編集
+- タスク完了チェック
+- 再生成と比較
+- エクスポート
+- 削除
 
-## Deploy on Vercel
+## RAGについて
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+このアプリでは、簡易的なローカル RAG を実装しています。
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `KnowledgeItem` にナレッジを保存
+- 入力文とカテゴリをもとに関連度の高いナレッジを抽出
+- 抽出したナレッジを OpenAI へのプロンプトに含める
+- どのナレッジを参照したかを UI 上で確認できる
+
+## OpenAIレスポンスの安全対策
+
+- JSON Schema を使って JSON 形式を強制
+- コードフェンス付き JSON にも対応
+- JSON パース失敗時はフォールバック結果を返却
+- 型ガードでレスポンスの整合性を確認
+- フォールバック時は warning を返す
+
+## 確認ポイント
+
+- 業務依頼入力から生成まで一通り動く
+- RAG参照が表示される
+- フォローアップ回答で再生成できる
+- 保存後に履歴一覧へ反映される
+- 一覧の検索、絞り込み、並び替えが動く
+- 詳細ページで編集、比較、削除、エクスポートができる
+- ダッシュボードに統計が表示される
+
+## 今後の拡張案
+
+- ナレッジ管理画面
+- ベクトル検索ベースの本格 RAG
+- ユーザー認証
+- チーム共有
+- コメント機能
+- 添付ファイル対応
+- Slack / Notion 連携
+
+## ライセンス
+
+個人ポートフォリオ用途を想定しています。

@@ -1,0 +1,44 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model TaskPlan {
+  id                  Int      @id @default(autoincrement())
+  title               String
+  category            String
+  inputText           String
+  requestSummary      String
+  tasksJson           String
+  prioritiesJson      String
+  stepsJson           String
+  risksJson           String
+  checksJson          String
+  followUpQuestionsJson String @default("[]")
+  followUpAnswersJson String @default("[]")
+  taskChecksJson      String   @default("[]")
+  ragSourcesJson      String   @default("[]")
+  status              String   @default("未着手")
+  isConfirmed         Boolean  @default(false)
+  tone                String   @default("標準")
+  style               String   @default("現場向け")
+  notes               String   @default("")
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+}
+
+model KnowledgeItem {
+  id        Int      @id @default(autoincrement())
+  title     String
+  category  String
+  content   String
+  tagsJson  String   @default("[]")
+  source    String   @default("社内ナレッジ")
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
